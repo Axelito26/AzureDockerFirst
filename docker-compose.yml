@@ -1,0 +1,49 @@
+services:
+  home:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Usa el mismo Dockerfile para todos
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production
+    command: ["node", "homeServer.js"]  # Comando específico para iniciar el home
+    networks:
+      - app-network
+
+  crud:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Usa el mismo Dockerfile para todos
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production
+    command: ["node", "app.js"]  # Comando específico para iniciar el CRUD
+    networks:
+      - app-network
+
+  footer:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Usa el mismo Dockerfile para todos
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production
+    command: ["node", "footerServer.js"]  # Comando específico para iniciar el footer
+    networks:
+      - app-network
+
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./proxy_default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
